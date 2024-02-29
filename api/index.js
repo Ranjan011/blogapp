@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoute.js";
 
@@ -17,6 +18,7 @@ mongoose
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000; // Use process.env.PORT if specified, otherwise default to 3000
 
