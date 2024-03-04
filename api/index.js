@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoute.js";
 
@@ -15,10 +16,20 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://127.0.0.1:5173"], // Adjust this to the origin of your frontend app
+    credentials: true, // This is important for cookies
+  })
+);
+
+// app.use((req, res, next) => {
+  // console.log(req.headers.cookie, "line 33"); // Log raw cookie header
+//   next();
+// });
 
 const PORT = process.env.PORT || 3000; // Use process.env.PORT if specified, otherwise default to 3000
 
