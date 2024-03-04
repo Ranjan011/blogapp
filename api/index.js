@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoute.js";
+import postRoutes from "./routes/postRoutes.js";
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ app.use(
 );
 
 // app.use((req, res, next) => {
-  // console.log(req.headers.cookie, "line 33"); // Log raw cookie header
+// console.log(req.headers.cookie, "line 33"); // Log raw cookie header
 //   next();
 // });
 
@@ -41,6 +42,7 @@ app.listen(PORT, () => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/post", postRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
