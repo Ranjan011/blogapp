@@ -20,18 +20,24 @@ import {
   signOutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const DashProfile = () => {
+  const { currentUser, error, isLoading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
-  const { currentUser, error } = useSelector((state) => state.user);
-  const filePickerRef = useRef();
+
+  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserError, setUpdateUserError] = useState(null);
+
   const [formData, setFormData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
 
+  const filePickerRef = useRef();
   const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
@@ -67,6 +73,7 @@ const DashProfile = () => {
     //       }
     //     }
     //   }
+    setImageFileUploading(true);
     setImageFileUploadError(null);
     const storage = getStorage(appBlog);
     const filename = new Date().getTime() + imageFile.name;
@@ -86,11 +93,13 @@ const DashProfile = () => {
         setImageFileUploadProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
+        setImageFileUploading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
           setFormData({ ...formData, profilePicture: downloadURL });
+          setImageFileUploading(false);
         });
       }
     );
@@ -110,6 +119,11 @@ const DashProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No changes made");
+      return;
+    }
+    if (imageFileUploading) {
+      setUpdateUserError("Please wait for image to upload");
       return;
     }
     try {
@@ -124,11 +138,14 @@ const DashProfile = () => {
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User's profile updated successfully");
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
     }
   };
 
@@ -236,9 +253,26 @@ const DashProfile = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone="purpleToBlue"
+          outline
+          disabled={isLoading || imageFileUploading}
+        >
+          {isLoading ? "Loading..." : "Update"}
         </Button>
+
+        {currentUser.isAdmin && (
+          <Link to={'/create-post'}>
+            <Button
+              type='button'
+              gradientDuoTone='purpleToPink'
+              className='w-full'
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
       </form>
 
       <div className="text-red-500 flex justify-between mt-5">
