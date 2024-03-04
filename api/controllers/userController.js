@@ -68,7 +68,17 @@ export const deleteUser = async (req, res, next) => {
     await User.findByIdAndDelete(req.params.userId);
     res.status(200).json("User has been deleted");
   } catch (error) {
-    console.log("error, 70 usercontroller");
+    next(error);
+  }
+};
+
+export const signOut = async (req, res, next) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json("User has been signed out");
+  } catch (error) {
     next(error);
   }
 };
