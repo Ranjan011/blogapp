@@ -10,14 +10,23 @@ import {
 import { appBlog } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const DashProfile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
   const filePickerRef = useRef();
+  const [formData, setFormData] = useState({});
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
+
+  const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -32,6 +41,14 @@ const DashProfile = () => {
       uploadImage();
     }
   }, [imageFile]);
+  useEffect(() => {
+    // Initialize formData with currentUser values when the component mounts or currentUser changes
+    setFormData({
+      username: currentUser.username || '',
+      email: currentUser.email || '',
+      password: '', // Assuming you want to let them set a new password; keep it empty initially
+    });
+  }, [currentUser]);
 
   const uploadImage = async () => {
     // service firebase.storage {
@@ -67,6 +84,7 @@ const DashProfile = () => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
         });
       }
     );
@@ -74,11 +92,45 @@ const DashProfile = () => {
     console.log("uploading image....");
   };
 
-  console.log(currentUser);
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+  setFormData(prevFormData => ({
+    ...prevFormData,
+    [id]: value,
+  }));
+  };
+  console.log(formData, "line 91");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+      } else {
+        dispatch(updateSuccess(data));
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
+
+  // console.log(currentUser);
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="py-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="file"
           accept="image/*"
@@ -126,15 +178,23 @@ const DashProfile = () => {
           type="text"
           id="username"
           placeholder="Username"
-          value={currentUser.username}
+          value={formData.username}
+          onChange={handleChange}
         />
         <TextInput
           type="email"
           id="email"
           placeholder="Enter your Email"
-          value={currentUser.email}
+          value={formData.email}
+          onChange={handleChange}
         />
-        <TextInput type="password" id="password" placeholder="Password" />
+        <TextInput
+          type="password"
+          id="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
         <Button type="submit" gradientDuoTone="purpleToBlue" outline>
           Update
         </Button>

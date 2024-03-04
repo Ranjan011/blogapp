@@ -96,11 +96,11 @@ export const google = async (req, res, next) => {
       const { password, ...rest } = user._doc;
 
       res
-      .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
-      })
-      .json(rest);
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
     }
   } catch (error) {}
 };
