@@ -18,7 +18,7 @@ const postSchema = new mongoose.Schema(
     image: {
       type: String,
       default:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fillustrations%2Ficon-profile-user-clip-art-7797704%2F&psig=AOvVaw0K66040soSZ-nRv3kC6ogl&ust=1709206382133000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCMiyk4z4zYQDFQAAAAAdAAAAABAE",
+        "https://images.unsplash.com/photo-1569060368681-889a62a8f416?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     category: {
       type: String,
