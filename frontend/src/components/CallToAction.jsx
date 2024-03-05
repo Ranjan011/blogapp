@@ -22,7 +22,7 @@ const CallToAction = () => {
           </a>
         </Button>
       </div>
-      <div className="p-7">
+      <div className="flex-1 p-7">
         <img src="https://oracle-devrel.github.io/devo-image-repository/seo-thumbnails/JavaScript---Thumbnail-1200-x-630.jpg" />
       </div>
     </div>
