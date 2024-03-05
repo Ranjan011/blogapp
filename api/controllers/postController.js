@@ -52,7 +52,7 @@ export const getPosts = async (req, res, next) => {
       .limit(limit);
 
     const totalPosts = await Post.countDocuments();
-
+    // console.log(posts, "line 55 post controller")
     const now = new Date();
     const oneMonthAgo = new Date(
       now.getFullYear(),

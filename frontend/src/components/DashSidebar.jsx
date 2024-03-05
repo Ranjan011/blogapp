@@ -35,7 +35,7 @@ const DashSidebar = () => {
       console.log(error.message);
     }
   };
-  console.log(currentUser);
+  // console.log(currentUser);
 
   return (
     <Sidebar className="w-full md:w-56">

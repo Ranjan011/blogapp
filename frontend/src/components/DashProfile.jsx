@@ -20,7 +20,7 @@ import {
   signOutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const DashProfile = () => {
@@ -114,7 +114,7 @@ const DashProfile = () => {
       [id]: value,
     }));
   };
-  console.log(formData, "line 91");
+  // console.log(formData, "line 91");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -263,11 +263,11 @@ const DashProfile = () => {
         </Button>
 
         {currentUser.isAdmin && (
-          <Link to={'/create-post'}>
+          <Link to={"/create-post"}>
             <Button
-              type='button'
-              gradientDuoTone='purpleToPink'
-              className='w-full'
+              type="button"
+              gradientDuoTone="purpleToPink"
+              className="w-full"
             >
               Create a post
             </Button>
