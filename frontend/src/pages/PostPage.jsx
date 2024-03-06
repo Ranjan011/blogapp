@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
+import CommentSection from "../components/CommentSection";
 
 const PostPage = () => {
   const { postSlug } = useParams();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
-
-  console.log(post);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        console.log("inside fetchpost");
         setLoading(true);
         const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
         const data = await res.json();
@@ -35,6 +35,8 @@ const PostPage = () => {
     };
     fetchPost();
   }, [postSlug]);
+
+  console.log(post);
 
   if (loading)
     return (
@@ -74,6 +76,7 @@ const PostPage = () => {
       <div className="max-w-4xl mx-auto w-full">
         <CallToAction />
       </div>
+      <CommentSection postId={post._id} />
     </main>
   );
 };
